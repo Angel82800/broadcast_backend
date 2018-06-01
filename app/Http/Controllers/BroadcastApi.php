@@ -92,7 +92,14 @@ class BroadcastApi extends Controller
             'region'=>$saved_apps[0]->region,'bucket_count'=>$saved_video[0]->bucket_count,
             'answer_count'=>$saved_video[0]->answer_count,'duration'=>$saved_video[0]->duration,
             'is_published'=>$saved_video[0]->is_published ]);
-        echo json_encode($send_result);
+        
+        $tokens = [];
+        $messages = array(
+            "en" => 'New Video Upload'
+        );
+        $contest_data = array("video_id"=>$saved_video[0]->id, "video_url"=>$saved_video[0]->url.$saved_video[0]->file_path,"app_name"=>$key);
+        OneSignalHelper::sendMessage($tokens, true, $messages, $contest_data);
+        echo json_encode($send_result);        
     }
 
     public function events(Request $request){
@@ -112,9 +119,7 @@ class BroadcastApi extends Controller
         $video_event_log->duration = $duration;;
         $video_event_log->save();
 
-        //Video::increment('bucket_count',1,['id',$video_id]);
-        $video = Video();
-        $video->increment('bucket_count',1,['id',$video_id]);
+        Video::whereId($video_id)->increment('answer_count');
         $send_result = array("result"=>"success");
         echo json_encode($send_result);
     }
@@ -137,7 +142,10 @@ class BroadcastApi extends Controller
         //video_id, video_url, app_name
         //$custom_data = array("video_id")
         $tokens = [];
-        OneSignalHelper::sendMessage($tokens, true);
+        $messages = array(
+            "en" => 'New Video Upload'
+        );
+        OneSignalHelper::sendMessage($tokens, true,$messages);
     }
 
 }

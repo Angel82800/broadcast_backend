@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::match(['get', 'post'], '/users','BroadcastApi@userRegister');
 Route::match(['get', 'post'], '/upload','BroadcastApi@uploads');
+Route::match(['get', 'post'], '/events','BroadcastApi@events');
 Route::match(['get', 'post'], '/getvideolist','BroadcastApi@getvideolist');
 Route::match(['get', 'post'], '/push','BroadcastApi@push');
 
